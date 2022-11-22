@@ -7,7 +7,18 @@ from sensor.exceptions import SensorException
 from sensor.logger import logging
 
 
-def read_yaml_file(file_path) -> Dict:
+def read_yaml_file(file_path: str) -> Dict:
+    """
+    Reads the yaml file.
+
+    Args:
+        file_path (str):
+            The filepath of the yaml file.
+
+    Returns:
+        dict:
+            The schema file
+    """
     try:
         logging.info('Reading schema.yaml file. .')
         with open(file_path, 'rb') as schema_file:
@@ -20,6 +31,20 @@ def write_yaml_file(file_path: str,
                     content: object,
                     replace: bool = False
                     ) -> None:
+    """
+    Writes the yaml file to the path specified.
+
+    Args:
+        file_path (str):
+            The filepath where the schema file is to be written.
+        content (object):
+            The contents of the yaml file.
+        replace (boolean, optional):
+            If True, Replaces the existing schema file in the filepath.
+
+    Returns:
+        None:
+    """
     try:
         if replace:
             if os.path.exists(file_path):
