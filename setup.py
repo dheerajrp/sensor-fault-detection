@@ -25,6 +25,5 @@ setup(
     author="Dheeraj RP",
     author_email="dheerajrp66@gmail.com",
     packages=find_packages(),
-    install_requires=get_requirements()
+    install_requires=get_requirements(),
 )
-

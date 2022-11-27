@@ -26,10 +26,11 @@ class DataIngestion:
             DataFrame
         """
         try:
-            logging.info('Exporting data from mongo to feature store')
+            logging.info("Exporting data from mongo to feature store")
             sensor_data = SensorData()
             dataframe = sensor_data.export_collection_as_dataframe(
-                collection_name=self.data_ingestion_config.collection_name)
+                collection_name=self.data_ingestion_config.collection_name
+            )
             # create folder for feature store
             feature_store_file_path = self.data_ingestion_config.feature_store_file_path
             dir_name = os.path.dirname(feature_store_file_path)
@@ -51,31 +52,32 @@ class DataIngestion:
             None:
         """
         try:
-            train_csv, test_csv = train_test_split(dataframe,
-                                                   test_size=self.data_ingestion_config.train_test_split_ratio)
-            logging.info('Performed train test split. .')
-            dir_path = os.path.dirname(
-                self.data_ingestion_config.training_file_path)
+            train_csv, test_csv = train_test_split(
+                dataframe, test_size=self.data_ingestion_config.train_test_split_ratio
+            )
+            logging.info("Performed train test split. .")
+            dir_path = os.path.dirname(self.data_ingestion_config.training_file_path)
             os.makedirs(dir_path)
-            logging.info('Exporting train csv. .')
-            train_csv.to_csv(self.data_ingestion_config.training_file_path,
-                             index=False, header=True)
-            test_csv.to_csv(self.data_ingestion_config.testing_file_path,
-                            index=False, header=True)
-            logging.info('Train test split completed successfully. .')
+            logging.info("Exporting train csv. .")
+            train_csv.to_csv(
+                self.data_ingestion_config.training_file_path, index=False, header=True
+            )
+            test_csv.to_csv(
+                self.data_ingestion_config.testing_file_path, index=False, header=True
+            )
+            logging.info("Train test split completed successfully. .")
         except Exception as error:
             raise SensorException(error, sys)
 
     def initiate_data_ingestion(self) -> DataIngestionArtifact:
         try:
             dataframe = self.export_data_into_feature_store()
-            dataframe = dataframe.drop(self._schema_config['drop_columns'],
-                                       axis=1)
+            dataframe = dataframe.drop(self._schema_config["drop_columns"], axis=1)
             self.split_data_as_train_test(dataframe=dataframe)
             data_ingestion_artifact = DataIngestionArtifact(
-                train_file_path=self.data_ingestion_config
-                .training_file_path,
-                test_file_path=self.data_ingestion_config.testing_file_path)
+                train_file_path=self.data_ingestion_config.training_file_path,
+                test_file_path=self.data_ingestion_config.testing_file_path,
+            )
             return data_ingestion_artifact
         except Exception as error:
             raise SensorException(error, sys)

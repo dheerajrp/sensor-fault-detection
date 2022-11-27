@@ -21,10 +21,11 @@ class SensorData:
         except Exception as error:
             raise SensorException(error, sys)
 
-    def export_collection_as_dataframe(self,
-                                       collection_name: str,
-                                       database_name: Optional[str] = None,
-                                       ) -> DataFrame:
+    def export_collection_as_dataframe(
+        self,
+        collection_name: str,
+        database_name: Optional[str] = None,
+    ) -> DataFrame:
         """
         Exports the collection from mongodb to a pandas dataframe.
 
@@ -45,10 +46,10 @@ class SensorData:
 
         df = pandas.DataFrame(list(collection.find()))
 
-        if '_id' in df.columns.tolist():
-            df = df.drop(columns='_id', axis=1)
-            logging.info('dropped id column. .')
+        if "_id" in df.columns.tolist():
+            df = df.drop(columns="_id", axis=1)
+            logging.info("dropped id column. .")
 
         df.replace({"na": np.nan}, inplace=True)
-        logging.info('replaced na by nan. .')
+        logging.info("replaced na by nan. .")
         return df

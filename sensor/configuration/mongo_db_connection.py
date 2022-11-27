@@ -19,11 +19,9 @@ class MongoDBClient:
         try:
             if MongoDBClient.client is None:
                 mongo_db_url = os.getenv("MONGODB_URL")
-                MongoDBClient.client = pymongo.MongoClient(mongo_db_url,
-                                                           tlsCAFile=ca)
+                MongoDBClient.client = pymongo.MongoClient(mongo_db_url, tlsCAFile=ca)
             self.client = MongoDBClient.client
             self.database = self.client[database_name]
             self.database_name = database_name
         except Exception as error:
             raise SensorException(error, sys)
-

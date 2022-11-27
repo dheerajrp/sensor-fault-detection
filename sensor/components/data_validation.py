@@ -4,8 +4,7 @@ import pandas
 from scipy.stats import ks_2samp
 
 from sensor.constants.training_pipeline import SCHEMA_FILE_PATH
-from sensor.entity.artifact_entity import DataValidationArtifact, \
-    DataIngestionArtifact
+from sensor.entity.artifact_entity import DataValidationArtifact, DataIngestionArtifact
 from sensor.entity.config_entity import DataValidationConfig
 from sensor.exceptions import SensorException
 from sensor.logger import logging
@@ -13,8 +12,11 @@ from sensor.utils.main_utils import read_yaml_file, write_yaml_file
 
 
 class DataValidation:
-    def __init__(self, data_ingestion_artifact: DataIngestionArtifact,
-                 data_validation_config: DataValidationConfig):
+    def __init__(
+        self,
+        data_ingestion_artifact: DataIngestionArtifact,
+        data_validation_config: DataValidationConfig,
+    ):
         try:
             self.data_ingestion_artifact = data_ingestion_artifact
             self.data_validation_config = data_validation_config
@@ -24,7 +26,7 @@ class DataValidation:
 
     def validate_number_of_columns(self, dataframe: pandas.DataFrame) -> bool:
         try:
-            number_of_columns = len(self._schema_config['columns'])
+            number_of_columns = len(self._schema_config["columns"])
             if number_of_columns == len(dataframe.columns):
                 return True
             return False
@@ -33,7 +35,7 @@ class DataValidation:
 
     def is_numerical_column_exists(self, dataframe: pandas.DataFrame) -> bool:
         try:
-            numerical_columns = self._schema_config['numerical_columns']
+            numerical_columns = self._schema_config["numerical_columns"]
             dataframe_columns = dataframe.columns
 
             num_column_status = True
@@ -42,7 +44,7 @@ class DataValidation:
                 if num_column not in dataframe_columns:
                     num_column_status = False
                     missing_numerical_columns.append(num_column)
-            logging.info(f'Missing numerical columns: [{missing_numerical_columns}]')
+            logging.info(f"Missing numerical columns: [{missing_numerical_columns}]")
             return num_column_status
         except Exception as error:
             raise SensorException(error)
@@ -50,7 +52,7 @@ class DataValidation:
     @staticmethod
     def read_data(file_path) -> pandas.DataFrame:
         try:
-            logging.info('Reading data for validation. .')
+            logging.info("Reading data for validation. .")
             return pandas.read_csv(file_path)
         except Exception as error:
             raise SensorException(error)
@@ -68,10 +70,15 @@ class DataValidation:
                 else:
                     is_drift = True
                     status = False
-                report.update({column: {'p_value': float(ks_out.pvalue),
-                                        'drift_status': is_drift}})
-            drift_report_file_path = \
-                self.data_validation_config.drift_report_file_path
+                report.update(
+                    {
+                        column: {
+                            "p_value": float(ks_out.pvalue),
+                            "drift_status": is_drift,
+                        }
+                    }
+                )
+            drift_report_file_path = self.data_validation_config.drift_report_file_path
 
             # creating the directory
             dir_path = os.path.dirname(drift_report_file_path)
@@ -84,8 +91,8 @@ class DataValidation:
 
     def initiate_data_validation(self) -> DataValidationArtifact:
         try:
-            error_message = ''
-            logging.info('Initiating data validation. .')
+            error_message = ""
+            logging.info("Initiating data validation. .")
             train_file_path = self.data_ingestion_artifact.train_file_path
             test_file_path = self.data_ingestion_artifact.test_file_path
 
@@ -96,41 +103,37 @@ class DataValidation:
             # validating columns
             status = self.validate_number_of_columns(dataframe=train_dataframe)
             if not status:
-                error_message = f'{error_message} Train data doesn\'t contain'
-                f'all the columns'
+                error_message = f"{error_message} Train data doesn't contain"
+                f"all the columns"
             status = self.validate_number_of_columns(dataframe=test_dataframe)
             if not status:
-                error_message = f'{error_message} Test data doesn\'t contain'
-                f'all the columns'
+                error_message = f"{error_message} Test data doesn't contain"
+                f"all the columns"
 
             # numerical column validation
             status = self.is_numerical_column_exists(train_dataframe)
             if not status:
-                error_message = f'{error_message} Train data doesn\'t contain'
-                f'all the numerical columns'
+                error_message = f"{error_message} Train data doesn't contain"
+                f"all the numerical columns"
 
             status = self.is_numerical_column_exists(test_dataframe)
             if not status:
-                error_message = f'{error_message} Test data doesn\'t contain'
-                f'all the numerical columns'
+                error_message = f"{error_message} Test data doesn't contain"
+                f"all the numerical columns"
             if len(error_message) > 0:
                 raise Exception(error_message)
 
             # check for data drift
-            status = self.detect_data_drift(base_df=train_dataframe,
-                                            current_df=test_dataframe)
+            status = self.detect_data_drift(
+                base_df=train_dataframe, current_df=test_dataframe
+            )
             data_validation_artifact = DataValidationArtifact(
                 validation_status=status,
-                valid_train_file_path=self.data_ingestion_artifact
-                .train_file_path,
-                valid_test_file_path=self.data_ingestion_artifact
-                .test_file_path,
-                invalid_train_file_path=self.data_validation_config
-                .invalid_train_file_path,
-                invalid_test_file_path=self.data_validation_config
-                .invalid_test_file_path,
-                drift_report_file_path=self.data_validation_config
-                .drift_report_file_path
+                valid_train_file_path=self.data_ingestion_artifact.train_file_path,
+                valid_test_file_path=self.data_ingestion_artifact.test_file_path,
+                invalid_train_file_path=self.data_validation_config.invalid_train_file_path,
+                invalid_test_file_path=self.data_validation_config.invalid_test_file_path,
+                drift_report_file_path=self.data_validation_config.drift_report_file_path,
             )
             return data_validation_artifact
         except Exception as error:
