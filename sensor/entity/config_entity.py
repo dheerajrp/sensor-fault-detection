@@ -2,7 +2,6 @@ import os
 from datetime import datetime
 
 from sensor.constants import training_pipeline
-from sensor.constants import training_pipeline
 
 
 class TrainingPipelineConfig:
@@ -74,3 +73,23 @@ class DataValidationConfig:
         self.invalid_test_file_path: str = os.path.join(
             self.invalid_data_dir, training_pipeline.TEST_FILE_NAME
         )
+
+
+class DataTransformationConfig:
+    def __init__(self, training_pipeline_config: TrainingPipelineConfig):
+        self.data_transformation_dir = os.path.join(
+            training_pipeline_config.artifact_dir,
+            training_pipeline.DATA_TRANSFORMATION_DIR_NAME)
+        self.data_transformation_transformed_data_dir = os.path.join(
+            self.data_transformation_dir,
+            training_pipeline.DATA_TRANSFORMATION_TRANSFORMED_DATA_DIR)
+        self.data_transformation_transformed_object_file_path = os.path.join(
+            self.data_transformation_dir,
+            training_pipeline.DATA_TRANSFORMATION_TRANSFORMED_OBJECT_DIR,
+            training_pipeline.PREPROCESSING_OBJECT_FILENAME)
+        self.data_transformed_train_file_path = os.path.join(
+            self.data_transformation_transformed_data_dir,
+            training_pipeline.TRAIN_FILE_NAME.replace('csv', 'npy'))
+        self.data_transformed_test_file_path = os.path.join(
+            self.data_transformation_transformed_data_dir,
+            training_pipeline.TEST_FILE_NAME.replace('csv', 'npy'))
