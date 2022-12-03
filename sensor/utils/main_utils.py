@@ -72,7 +72,7 @@ def save_numpy_array_data(file_path: str, array: np.array):
     try:
         dir_path = os.path.dirname(file_path)
         os.makedirs(dir_path, exist_ok=True)
-        with open(file_path, 'wb') as file_writer:
+        with open(file_path, "wb") as file_writer:
             np.save(file_writer, array)
         file_writer.close()
     except Exception as error:
@@ -92,7 +92,7 @@ def load_numpy_array_data(file_path: str) -> np.array:
             A NumPy array.
     """
     try:
-        with open(file_path, 'rb') as file_reader:
+        with open(file_path, "rb") as file_reader:
             return np.load(file_reader)
     except Exception as error:
         raise SensorException(error)
@@ -114,7 +114,7 @@ def save_object(file_path: str, obj: object) -> None:
     try:
         dir_name = os.path.dirname(file_path)
         os.makedirs(dir_name, exist_ok=True)
-        with open(file_path, 'wb') as file_writer:
+        with open(file_path, "wb") as file_writer:
             dill.dump(obj, file_writer)
         file_writer.close()
     except Exception as error:
