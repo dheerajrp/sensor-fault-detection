@@ -112,3 +112,6 @@ class ModelTrainerConfig:
             training_pipeline.MODEL_TRAINER_TRAINED_MODEL_NAME,
         )
         self.expected_accuracy = training_pipeline.MODEL_TRAINER_EXPECTED_SCORE
+        self.trained_model_acceptance_criterion = (
+            training_pipeline.MODEL_TRAINER_MODEL_ACCEPTANCE_CRITERION
+        )

@@ -119,3 +119,24 @@ def save_object(file_path: str, obj: object) -> None:
         file_writer.close()
     except Exception as error:
         raise SensorException(error)
+
+
+def load_object(file_path: str) -> object:
+    """
+    Loads the object to the specified file path.
+
+    Args:
+        file_path:
+            The file path where the object to be loaded.
+
+    Returns:
+        object:
+    """
+    try:
+        if not os.path.exists(file_path):
+            raise Exception(f"The file path: {file_path} does not exist.")
+        with open(file_path, "rb") as file_reader:
+            dill.load(file_reader)
+            return dill
+    except Exception as error:
+        raise SensorException(error)
