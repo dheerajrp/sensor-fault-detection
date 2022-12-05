@@ -1,5 +1,4 @@
 import logging
-import sys
 from typing import Optional
 
 import numpy as np
@@ -19,7 +18,7 @@ class SensorData:
         try:
             self.mongodb_client = MongoDBClient(database_name=DATABASE_NAME)
         except Exception as error:
-            raise SensorException(error, sys)
+            raise SensorException(error)
 
     def export_collection_as_dataframe(
         self,

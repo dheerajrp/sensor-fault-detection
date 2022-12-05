@@ -1,5 +1,4 @@
 import os
-import sys
 
 import certifi
 import pymongo
@@ -24,4 +23,4 @@ class MongoDBClient:
             self.database = self.client[database_name]
             self.database_name = database_name
         except Exception as error:
-            raise SensorException(error, sys)
+            raise SensorException(error)

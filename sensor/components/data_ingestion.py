@@ -1,5 +1,4 @@
-import os.path
-import sys
+import os
 
 from pandas import DataFrame
 from sklearn.model_selection import train_test_split
@@ -38,7 +37,7 @@ class DataIngestion:
             dataframe.to_csv(feature_store_file_path, index=False, header=True)
             return dataframe
         except Exception as error:
-            raise SensorException(error, sys)
+            raise SensorException(error)
 
     def split_data_as_train_test(self, dataframe: DataFrame) -> None:
         """
@@ -67,7 +66,7 @@ class DataIngestion:
             )
             logging.info("Train test split completed successfully. .")
         except Exception as error:
-            raise SensorException(error, sys)
+            raise SensorException(error)
 
     def initiate_data_ingestion(self) -> DataIngestionArtifact:
         try:
@@ -80,4 +79,4 @@ class DataIngestion:
             )
             return data_ingestion_artifact
         except Exception as error:
-            raise SensorException(error, sys)
+            raise SensorException(error)

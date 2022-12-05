@@ -1,5 +1,3 @@
-import sys
-
 from sensor.components.data_ingestion import DataIngestion
 from sensor.components.data_transformation import DataTransformation
 from sensor.components.data_validation import DataValidation
@@ -46,7 +44,7 @@ class TrainPipeline:
             )
             return data_ingestion_artifact
         except Exception as error:
-            raise SensorException(error, sys)
+            raise SensorException(error)
 
     def start_data_validation(
         self, data_ingestion_artifact: DataIngestionArtifact
@@ -65,7 +63,7 @@ class TrainPipeline:
             )
             return data_validation_artifact
         except Exception as error:
-            raise SensorException(error, sys)
+            raise SensorException(error)
 
     def start_data_transformation(
         self, data_validation_artifact: DataValidationArtifact
@@ -82,7 +80,7 @@ class TrainPipeline:
             )
             return data_transformation_artifact
         except Exception as error:
-            raise SensorException(error, sys)
+            raise SensorException(error)
 
     def start_model_trainer(
         self, data_transformation_artifact: DataTransformationArtifact
@@ -95,7 +93,7 @@ class TrainPipeline:
             model_trainer_artifact = model_trainer.initiate_model_trainer()
             return model_trainer_artifact
         except Exception as error:
-            raise SensorException(error, sys)
+            raise SensorException(error)
 
     def start_model_evaluation(
         self,
@@ -110,13 +108,13 @@ class TrainPipeline:
             model_eval_artifact = model_evaluator.initiate_model_evaluation()
             return model_eval_artifact
         except Exception as error:
-            raise SensorException(error, sys)
+            raise SensorException(error)
 
     def start_model_pusher(self):
         try:
             pass
         except Exception as error:
-            raise SensorException(error, sys)
+            raise SensorException(error)
 
     def run_pipeline(self):
         try:
@@ -138,4 +136,4 @@ class TrainPipeline:
             if not model_eval_artifact.is_model_accepted:
                 raise Exception("Trained model is not better than the best model.")
         except Exception as error:
-            raise SensorException(error, sys)
+            raise SensorException(error)
