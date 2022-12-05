@@ -29,8 +29,8 @@ class ModelTrainer:
     def train_model(self, x_train, y_train):
         try:
             xg_boost_classifier = XGBClassifier()
-            model = xg_boost_classifier.fit(x_train, y_train)
-            return model
+            xg_boost_classifier.fit(x_train, y_train)
+            return xg_boost_classifier
         except Exception as error:
             raise SensorException(error)
 
@@ -57,7 +57,7 @@ class ModelTrainer:
 
             y_train_pred = model.predict(x_train)
             train_metric = get_classification_score(y_true=y_train, y_pred=y_train_pred)
-            if train_metric.f1_score <= self.model_trainer_config.expected_accuracy:
+            if train_metric.f1_score < self.model_trainer_config.expected_accuracy:
                 raise Exception("Model is not satisfying expected score.")
 
             y_test_pred = model.predict(x_test)
