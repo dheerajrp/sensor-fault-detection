@@ -74,7 +74,6 @@ def save_numpy_array_data(file_path: str, array: np.array):
         os.makedirs(dir_path, exist_ok=True)
         with open(file_path, "wb") as file_writer:
             np.save(file_writer, array)
-        file_writer.close()
     except Exception as error:
         raise SensorException(error)
 
@@ -93,7 +92,7 @@ def load_numpy_array_data(file_path: str) -> np.array:
     """
     try:
         with open(file_path, "rb") as file_reader:
-            return np.load(file_reader)
+            return np.load(file_reader, allow_pickle=True)
     except Exception as error:
         raise SensorException(error)
 
