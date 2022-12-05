@@ -3,12 +3,14 @@ import sys
 from sensor.components.data_ingestion import DataIngestion
 from sensor.components.data_transformation import DataTransformation
 from sensor.components.data_validation import DataValidation
+from sensor.components.model_evaluation import ModelEvaluation
 from sensor.components.model_trainer import ModelTrainer
 from sensor.entity.artifact_entity import (
     DataIngestionArtifact,
     DataValidationArtifact,
     DataTransformationArtifact,
     ModelTrainerArtifact,
+    ModelEvaluationArtifact,
 )
 from sensor.entity.config_entity import (
     TrainingPipelineConfig,
@@ -16,6 +18,7 @@ from sensor.entity.config_entity import (
     DataValidationConfig,
     DataTransformationConfig,
     ModelTrainerConfig,
+    ModelEvaluationConfig,
 )
 from sensor.exceptions import SensorException
 from sensor.logger import logging
@@ -94,9 +97,18 @@ class TrainPipeline:
         except Exception as error:
             raise SensorException(error, sys)
 
-    def start_model_evaluation(self):
+    def start_model_evaluation(
+        self,
+        data_validation_artifact: DataValidationArtifact,
+        model_trainer_artifact: ModelTrainerArtifact,
+    ) -> ModelEvaluationArtifact:
         try:
-            pass
+            model_eval_config = ModelEvaluationConfig(self.training_pipeline_config)
+            model_evaluator = ModelEvaluation(
+                model_eval_config, data_validation_artifact, model_trainer_artifact
+            )
+            model_eval_artifact = model_evaluator.initiate_model_evaluation()
+            return model_eval_artifact
         except Exception as error:
             raise SensorException(error, sys)
 
@@ -120,5 +132,10 @@ class TrainPipeline:
             model_trainer_artifact: ModelTrainerArtifact = self.start_model_trainer(
                 data_transformation_artifact
             )
+            model_eval_artifact: ModelEvaluationArtifact = self.start_model_evaluation(
+                data_validation_artifact, model_trainer_artifact
+            )
+            if not model_eval_artifact.is_model_accepted:
+                raise Exception("Trained model is not better than the best model.")
         except Exception as error:
             raise SensorException(error, sys)

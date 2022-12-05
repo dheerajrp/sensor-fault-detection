@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
@@ -36,3 +37,13 @@ class ModelTrainerArtifact:
     trained_model_file_path: str
     train_metric_artifact: ClassificationMetricArtifact
     test_metric_artifact: ClassificationMetricArtifact
+
+
+@dataclass
+class ModelEvaluationArtifact:
+    trained_model_path: str
+    trained_model_metric_artifact: ClassificationMetricArtifact
+    best_model_metric_artifact: Optional[ClassificationMetricArtifact]
+    best_model_path: Optional[str]
+    improved_accuracy: Optional[float]
+    is_model_accepted: bool
