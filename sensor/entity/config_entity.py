@@ -132,11 +132,16 @@ class ModelEvaluationConfig:
 
 class ModelPusherConfig:
     def __init__(self, training_pipeline_config: TrainingPipelineConfig):
-        self.model_pusher_dir = os.path.join(training_pipeline_config.artifact_dir,
-                                             training_pipeline.MODEL_PUSHER_DIR_NAME)
-        self.model_file_path = os.path.join(self.model_pusher_dir,
-                                            training_pipeline.MODEL_TRAINER_TRAINED_MODEL_NAME)
-        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-        self.saved_model_dir = os.path.join(training_pipeline.SAVED_MODEL_DIR,
-                                            str(timestamp),
-                                            training_pipeline.MODEL_TRAINER_TRAINED_MODEL_NAME)
+        self.model_pusher_dir = os.path.join(
+            training_pipeline_config.artifact_dir,
+            training_pipeline.MODEL_PUSHER_DIR_NAME,
+        )
+        self.model_file_path = os.path.join(
+            self.model_pusher_dir, training_pipeline.MODEL_TRAINER_TRAINED_MODEL_NAME
+        )
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        self.saved_model_dir = os.path.join(
+            training_pipeline.SAVED_MODEL_DIR,
+            str(timestamp),
+            training_pipeline.MODEL_TRAINER_TRAINED_MODEL_NAME,
+        )
